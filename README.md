@@ -157,5 +157,9 @@ if __name__ == "__main__":
 ## Resultados
 El programa desarrollado permite visualizar de manera interactiva la trayectoria del sol y la orientación del panel solar a lo largo de un día determinado. Los ángulos de control calculados permiten que el panel solar se mantenga perpendicular a la luz solar, maximizando así la eficiencia del sistema.
 
+Aquí se puede apreciar una fotografía de como queda nuestra interfaz incluído una pequeña simulación.
+
+
+
 ## Conclusión
 El seguidor solar desarrollado en este proyecto demuestra cómo el uso de técnicas matemáticas y de programación puede mejorar la eficiencia energética en sistemas solares. La implementación de un modelo interactivo permite explorar de manera dinámica cómo el panel solar sigue la trayectoria del sol, ofreciendo una herramienta educativa y práctica para el estudio de energías renovables.
