@@ -1,0 +1,13 @@
+Para la correcta ejecucion del API.PANELSOLAR.py y API.ipynb se necesitan instalar las siguientes librerias:
+
+numpy
+matplotlib
+pysolar
+pytz
+
+La intalacion se puede realizar desde un cmd y con los siguientes comandos:
+
+pip install numpy
+pip install matplotlib
+pip install pysolar
+pip install pytz
