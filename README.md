@@ -159,7 +159,7 @@ El programa desarrollado permite visualizar de manera interactiva la trayectoria
 
 Aquí se puede apreciar una fotografía de como queda nuestra interfaz incluído una pequeña simulación.
 
-
+![Ejecución](https://github.com/iamjoel01/proyecto2bimestre_grupo8/raw/main/Ejecuci%C3%B3n.jpg)
 
 ## Conclusión
 El seguidor solar desarrollado en este proyecto demuestra cómo el uso de técnicas matemáticas y de programación puede mejorar la eficiencia energética en sistemas solares. La implementación de un modelo interactivo permite explorar de manera dinámica cómo el panel solar sigue la trayectoria del sol, ofreciendo una herramienta educativa y práctica para el estudio de energías renovables.
