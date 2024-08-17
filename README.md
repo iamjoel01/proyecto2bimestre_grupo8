@@ -36,6 +36,8 @@ El **roll** se calcula considerando tanto la elevación como el azimut del sol. 
 \]
 Donde la elevación y el azimut se convierten a radianes para realizar los cálculos trigonométricos.
 
+![Planteamiento Matemático](https://github.com/iamjoel01/proyecto2bimestre_grupo8/raw/main/Planetamiento%20Matem%C3%A1tico.jpg)
+
 ## Implementación del Código
 El código se organiza en funciones para calcular la posición del sol, los ángulos de control y para graficar la trayectoria del sol y del panel solar.
 
