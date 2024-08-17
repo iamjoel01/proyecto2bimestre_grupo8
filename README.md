@@ -10,33 +10,45 @@ Un seguidor solar es un sistema de orientación para maximizar la exposición a 
 ## Objetivo
 El objetivo principal de este proyecto es implementar un programa que permita calcular los ángulos de control para un seguidor solar de 2 grados de libertad, garantizando que el panel solar se mantenga perpendicular a la luz solar incidente. Además, se busca dibujar la trayectoria del sol y del panel solar durante un día específico, permitiendo la interacción con la fecha y la duración de la simulación.
 
-## Desarrollo Matemático
-El seguidor solar tiene dos grados de libertad definidos por los ángulos **pitch** y **roll**:
-- **Pitch**: Ángulo de rotación alrededor del eje que mira al este.
-- **Roll**: Ángulo de rotación alrededor del eje que mira al norte.
-
-### Posición Solar
-La posición del sol se describe mediante dos ángulos:
-- **Elevación** (θ): Ángulo entre el sol y su proyección en la superficie terrestre.
-- **Azimut** (α): Ángulo entre el norte y la proyección del sol en la superficie terrestre.
-
-### Cálculo de los Ángulos de Control
-Para calcular los ángulos de **pitch** y **roll**, se usa la geometría esférica. El **pitch** es el ángulo de elevación solar, y el **roll** depende de la combinación de la elevación y el azimut del sol. El objetivo es mantener el panel perpendicular a los rayos del sol.
-
-#### **Cálculo del Pitch**
-El **pitch** se calcula directamente utilizando la elevación del sol:
-\[
-\text{pitch} = \text{elevación}
-\]
-
-#### **Cálculo del Roll**
-El **roll** se calcula considerando tanto la elevación como el azimut del sol. La fórmula es:
-\[
-\text{roll} = \arctan \left(\frac{\cos(\text{elevación}) \times \sin(\text{azimut})}{\cos(\text{elevación}) \times \cos(\text{azimut})}\right)
-\]
-Donde la elevación y el azimut se convierten a radianes para realizar los cálculos trigonométricos.
+## Planteamiento Matemático
 
 ![Planteamiento Matemático](https://github.com/iamjoel01/proyecto2bimestre_grupo8/raw/main/Planetamiento%20Matem%C3%A1tico.jpg)
+
+### Definición del Vector Director de la Posición Solar (S)
+
+El vector director **S** representa la dirección del Sol en un sistema de coordenadas cartesianas y está definido por los ángulos de elevación (θ) y acimut (α). Las componentes del vector director **S** se calculan como:
+
+- **S_x** = cos(θ) * sin(α)
+- **S_y** = cos(θ) * cos(α)
+- **S_z** = sin(θ)
+
+Por lo tanto, el vector **S** es:
+
+**S** = (cos(θ) * sin(α), cos(θ) * cos(α), sin(θ))
+
+### Igualación de Matrices de Rotación y Despeje de Ángulos Pitch (β) y Roll (φ)
+
+Para calcular los ángulos de control del seguidor solar, igualamos el producto de dos matrices de rotación con el vector solar **S**. La ecuación resultante es:
+
+**R_C_B** * **R_C_A** = **S**
+
+Donde **R_C_B** y **R_C_A** son matrices de rotación y **S** es el vector director del Sol.
+
+De esta igualación, se despejan los ángulos φ (roll) y β (pitch) usando las siguientes fórmulas:
+
+- Para el ángulo φ (roll):
+
+  - -sin(φ) = cos(θ) * cos(α)
+  - sin(φ) = -cos(θ) * cos(α)
+  - φ = arcsin(-cos(θ) * cos(α))
+
+- Para el ángulo β (pitch):
+
+  - cos(φ) * cos(β) = sin(θ)
+  - cos(β) = sin(θ) / cos(φ)
+  - β = arccos(sin(θ) / cos(φ))
+
+Estas ecuaciones permiten calcular la orientación del seguidor solar en función de la posición solar en un momento específico.
 
 ## Implementación del Código
 El código se organiza en funciones para calcular la posición del sol, los ángulos de control y para graficar la trayectoria del sol y del panel solar.
@@ -56,12 +68,23 @@ Esta función calcula los ángulos de control pitch y roll a partir de los ángu
 
 ```python
 def calculateControlAngles(azimuth, elevation):
-    """Calcula los ángulos de control (pitch y roll)."""
+    """Calcula los ángulos de control (pitch y roll) en base a la posición solar."""
+    # Convertir los ángulos a radianes
     elevation_rad = math.radians(elevation)
     azimuth_rad = math.radians(azimuth)
 
-    pitch = elevation
-    roll = math.degrees(math.atan2(math.sin(azimuth_rad), math.cos(azimuth_rad)))
+    # Definir las componentes del vector solar
+    S_x = math.cos(elevation_rad) * math.sin(azimuth_rad)
+    S_y = math.cos(elevation_rad) * math.cos(azimuth_rad)
+    S_z = math.sin(elevation_rad)
+
+    # Calcular roll (φ) y pitch (β) usando las ecuaciones matemáticas
+    if S_y != 0:
+        roll = math.degrees(math.atan2(S_y, S_x))
+    else:
+        roll = 0
+    
+    pitch = math.degrees(math.asin(S_z))
 
     return pitch, roll
 ```
@@ -71,6 +94,7 @@ Esta función genera un gráfico 3D de la trayectoria del sol y la orientación 
 ```python
 def plotSunAndPanelTrajectory(start_date, duration_hours, latitude=-0.2105367, longitude=-78.491614):
     """Dibuja la trayectoria del sol y del panel solar de manera interactiva."""
+    # Convertir la fecha a timezone-aware si no lo es
     if start_date.tzinfo is None:
         start_date = timezone("America/Guayaquil").localize(start_date)
 
@@ -120,11 +144,15 @@ def interactive_plot():
 
     def update_plot(date, start_hour, duration):
         start_datetime = datetime.combine(date, datetime.min.time()) + timedelta(hours=start_hour)
+        # Convertir a timezone-aware
         start_datetime = timezone("America/Guayaquil").localize(start_datetime)
         plotSunAndPanelTrajectory(start_datetime, duration)
 
     interact = widgets.interactive(update_plot, date=date_picker, start_hour=time_picker, duration=duration_picker)
     display(interact)
+
+if __name__ == "__main__":
+    interactive_plot()
 ```
 ## Resultados
 El programa desarrollado permite visualizar de manera interactiva la trayectoria del sol y la orientación del panel solar a lo largo de un día determinado. Los ángulos de control calculados permiten que el panel solar se mantenga perpendicular a la luz solar, maximizando así la eficiencia del sistema.
